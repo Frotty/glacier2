@@ -1,0 +1,36 @@
+shader GBuffer
+draw geometry
+context [depthmask, depthtest=less, cullFace=back]
+vert
+	in
+		pos, normal, texCoord
+	out
+		vec4 pos, vec3 normal, vec2 texCoord
+	trans
+		world, normal, proj, view, mvp
+	mat
+		diffuseTexture
+
+	main()
+		out.pos = trans.world * vec4(in.pos,1.0)
+		out.normal = norm(trans.normal * in.normal)
+		out.texCoord = in.texCoord
+		gl_Pos = trans.mvp * vec4(in.pos,1.0)
+
+frag
+	out
+		albedo, aux, pos
+	mat
+		diffuseTexture
+
+
+	main()
+		vec3 albedo = texture(mat.diffuseTexture, in.texCoord).rgb
+		// Albedo (color-tinted diffuse)
+		out.albedo = vec4(albedo,1.0)//vec4(albedo, 1.0)
+		// Material Properties
+		out.aux = vec4(1,0,0, 1.0)
+		out.pos = in.pos
+
+
+
