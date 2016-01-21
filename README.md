@@ -1,1 +1,1 @@
-[![Codacy](https://img.shields.io/codacy/e27821fb6289410b8f58338c7e0bc686.svg)]()
+[![Codacy Badge](https://api.codacy.com/project/badge/grade/dea017ad40d44450a53037b44dac3997)](https://www.codacy.com/app/frotty/glacier2)
