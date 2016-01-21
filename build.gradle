@@ -6,9 +6,15 @@ apply plugin: 'antlr'
 apply plugin: 'java'
 apply plugin: 'idea'
 
+task copyTestResources(type: Copy) {
+    from "${projectDir}/src/test/resources"
+    into "${buildDir}/classes/test"
+}
+processTestResources.dependsOn copyTestResources
+
 ext.antlr = [
         grammarpackage: "antlr4",
-        antlrSource: 'src/main/resources/grammar',
+        antlrSource   : 'src/main/resources/grammar',
         destinationDir: "src/generated-sources/"
 ]
 
@@ -20,8 +26,9 @@ idea {
 
 configurations {
     antlr4 {
-        description = "ANTLR4"
+        description = "antlr4"
     }
+
 }
 
 task antlrOutputDir << {
@@ -37,9 +44,11 @@ task generateGrammarSourceZ(dependsOn: antlrOutputDir, type: JavaExec) {
     def grammars = fileTree(antlr.antlrSource).include('**/*.g4')
 
     main = 'org.antlr.v4.Tool'
+    def tmpcp = classpath;
     classpath = configurations.antlr4
     def pkg = antlr.grammarpackage.replaceAll("\\.", "/")
     args = ["-o", "${antlr.destinationDir}/${pkg}"/*, "-atn"*/, "-visitor", grammars.files].flatten()
+    tmpcp = tmpcp;
 
 }
 

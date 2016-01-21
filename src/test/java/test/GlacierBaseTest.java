@@ -8,6 +8,13 @@ import glacier.parser.GlacierCompiler;
 import org.junit.Assert;
 import org.junit.Before;
 
+import java.io.IOException;
+import java.net.URISyntaxException;
+import java.net.URL;
+import java.nio.charset.Charset;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -16,12 +23,19 @@ public class GlacierBaseTest {
 
     protected GlacierCompiler glacierCompiler;
 
-    protected void assertErrors(List<GlacierError> actual, GlacierErrorType... expected ) {
+    protected String loadTestFile(String path) throws URISyntaxException, IOException {
+        URL resource = getClass().getResource(path);
+        Assert.assertNotNull("Test file " + path +  " missing", resource);
+        Path resourcePath = Paths.get(resource.toURI());
+        return new String(Files.readAllBytes(resourcePath), Charset.defaultCharset());
+    }
+
+    protected void assertErrors(List<GlacierError> actual, GlacierErrorType... expected) {
         ArrayList expectList = new ArrayList(Arrays.<GlacierErrorType>asList(expected));
-        if(expectList.isEmpty() && ! actual.isEmpty()) {
+        if (expectList.isEmpty() && !actual.isEmpty()) {
             Assert.fail();
         }
-        for(GlacierError actualError : actual) {
+        for (GlacierError actualError : actual) {
             expectList.remove(actualError.getErrorType());
         }
         Assert.assertTrue(expectList.isEmpty());
