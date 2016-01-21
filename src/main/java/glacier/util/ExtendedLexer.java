@@ -163,6 +163,8 @@ public class ExtendedLexer implements TokenSource {
                             return firstNewline;
                         }
                     }
+                default :
+                    throw new IllegalArgumentException("Invalid switch argument");
             }
         }
     }
@@ -174,22 +176,23 @@ public class ExtendedLexer implements TokenSource {
 
 
     private void handleIndent(int n, int start, int stop) {
+        int stopIndex = stop;
         if (!isWurst) {
             return;
         }
         Token t = lastToken;
         if (t != null) {
             start = t.getStopIndex();
-            stop = t.getStopIndex();
+            stopIndex = t.getStopIndex();
         }
         if (debug) System.out.println("handleIndent " + n + "	 " + indentationLevels);
         if (n > indentationLevels.peek()) {
             indentationLevels.push(n);
-            nextTokens.add(makeToken(GlacierParser.STARTBLOCK, "$begin", start, stop));
+            nextTokens.add(makeToken(GlacierParser.STARTBLOCK, "$begin", start, stopIndex));
         } else {
             while (n < indentationLevels.peek()) {
                 indentationLevels.pop();
-                nextTokens.add(makeToken(GlacierParser.ENDBLOCK, "$end", start, stop));
+                nextTokens.add(makeToken(GlacierParser.ENDBLOCK, "$end", start, stopIndex));
             }
             if (n != indentationLevels.peek()) {
                 for (ANTLRErrorListener el : orig.getErrorListeners()) {
@@ -217,8 +220,9 @@ public class ExtendedLexer implements TokenSource {
 //		case GlacierParser.OR:
 //		case GlacierParser.ARROW:
                 return true;
+            default:
+                return false;
         }
-        return false;
     }
 
 

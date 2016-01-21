@@ -3,9 +3,9 @@ package glacier.parser;
 import java.util.HashMap;
 
 public class ShortcutManager {
-	HashMap<String, Shortcut> iedshortcuts = new HashMap<>();
-	HashMap<String, Shortcut> transshortcuts = new HashMap<>();
-	HashMap<String, Shortcut> funcshortcuts = new HashMap<>();
+	private HashMap<String, Shortcut> iedshortcuts = new HashMap<>();
+	private HashMap<String, Shortcut> transshortcuts = new HashMap<>();
+	private HashMap<String, Shortcut> funcshortcuts = new HashMap<>();
 	
 	public class Shortcut {
 		public String name;

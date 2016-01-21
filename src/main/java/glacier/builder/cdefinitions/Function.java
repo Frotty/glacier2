@@ -10,7 +10,7 @@ public class Function {
 	private String[] args;
 	private String returnType;
 	private String body;
-	static Function mainFunc;
+	private static Function mainFunc;
 	
 	public Function(String name, String[] args, String returnType, StatementsBlockContext body2, boolean main) {
 		this.name = name;

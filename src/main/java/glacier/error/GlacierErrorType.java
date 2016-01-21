@@ -24,7 +24,7 @@ public enum GlacierErrorType {
     public String print(String... inlineData) {
         String error = "Error(id:" + ordinal() + ") " + errorName + ": " + errorDetail;
         for (String dat : inlineData) {
-            error.replaceFirst("[{}]", dat);
+            error = error.replaceFirst("[{}]", dat);
         }
         return error;
     }
