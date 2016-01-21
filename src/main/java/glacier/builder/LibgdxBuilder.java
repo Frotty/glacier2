@@ -23,15 +23,15 @@ public class LibgdxBuilder {
 
 	public String fillTemplate(String template) {
 		// Shadername
-		template = template.replaceAll("<shadername>", shaderName);
+		String tmp = template.replaceAll("<shadername>", shaderName);
 		// Mandatory Members
-		template = template.replaceAll("\t<otherMembersBlock>;", otherMembersBlock());
-		template = template.replaceAll("\t\t<getLocationsBlock>;", getLocationsBlock());
-		template = template.replaceAll("\t\t<initBlock>;", initFromList());
-		template = template.replaceAll("\t\t<setBlockUniforms>;", beginBlock());
-		template = template.replaceAll("\t\t<instanceBlock>;", genInstance());
-		template = template.replaceAll("\t\t<contextOptions>;", genContextOptions());
-		return template.replaceAll("((?m)^[ \t]*\r?\n){2,}", "");
+		tmp = tmp.replaceAll("\t<otherMembersBlock>;", otherMembersBlock());
+		tmp = tmp.replaceAll("\t\t<getLocationsBlock>;", getLocationsBlock());
+		tmp = tmp.replaceAll("\t\t<initBlock>;", initFromList());
+		tmp = tmp.replaceAll("\t\t<setBlockUniforms>;", beginBlock());
+		tmp = tmp.replaceAll("\t\t<instanceBlock>;", genInstance());
+		tmp = tmp.replaceAll("\t\t<contextOptions>;", genContextOptions());
+		return tmp.replaceAll("((?m)^[ \t]*\r?\n){2,}", "");
 	}
 
 	public String otherMembersBlock() {

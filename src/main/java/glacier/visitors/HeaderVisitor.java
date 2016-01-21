@@ -3,11 +3,8 @@ package glacier.visitors;
 import antlr4.GlacierBaseVisitor;
 import antlr4.GlacierParser.ContextOptContext;
 import antlr4.GlacierParser.GlacierHeaderContext;
-import antlr4.GlacierParser.VarDefContext;
-import glacier.error.GlacierError;
 import glacier.error.GlacierErrorType;
 import glacier.parser.CompilationResult;
-import glacier.parser.GlacierCompiler;
 
 public class HeaderVisitor extends GlacierBaseVisitor<String> {
     public enum DrawDirective {
@@ -49,7 +46,6 @@ public class HeaderVisitor extends GlacierBaseVisitor<String> {
     }
 
     public DrawDirective drawDirective;
-
     private boolean depthMask;
     private DepthTest depthTest;
     private CullFace cullFace;

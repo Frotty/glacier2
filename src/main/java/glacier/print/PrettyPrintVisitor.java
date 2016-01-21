@@ -1,11 +1,7 @@
 package glacier.print;
 
-import antlr4.GlacierBaseVisitor;
 import antlr4.GlacierParser;
 import glacier.visitors.VisitorUtil;
-import org.antlr.v4.runtime.tree.ParseTree;
-
-import java.util.List;
 
 public class PrettyPrintVisitor extends PrintVisitor {
 

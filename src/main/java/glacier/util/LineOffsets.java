@@ -1,8 +1,8 @@
 package glacier.util;
 
 public class LineOffsets {
-	int[] offsets = new int[128];
-	int maxLine = 0;
+	private int[] offsets = new int[128];
+	private int maxLine = 0;
 	
 	public final static LineOffsets dummy = new LineOffsets();
 	
@@ -22,14 +22,15 @@ public class LineOffsets {
 	}
 
 	public int get(int line) {
-		if (line >= offsets.length) {
-			line = offsets.length-1;
+		int lineNumber = line;
+		if (lineNumber >= offsets.length) {
+            lineNumber = offsets.length-1;
 		}
-		while (line >= 0 && offsets[line] == 0) {
-			line--;
+		while (lineNumber >= 0 && offsets[lineNumber] == 0) {
+            lineNumber--;
 		}
-		if (line >= 0) {
-			return offsets[line];
+		if (lineNumber >= 0) {
+			return offsets[lineNumber];
 		} else {
 			return 0;
 		}

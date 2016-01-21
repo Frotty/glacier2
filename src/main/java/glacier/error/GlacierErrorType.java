@@ -10,7 +10,8 @@ public enum GlacierErrorType {
     INVALID_NAME("Invalid name", "Please only use alphanumerals and underscores."),
     INVALID_DRAW_DIRECT("Invalid draw directive", "Please use either fullscreen or geometry."),
     INVALID_CONTEXT_OPT("Invalid context options", "Please use any of []."),
-    INVALID_VERTEX_IN("Invalid vertex in-variable <{}>", "Please use only {}");
+    INVALID_VERTEX_IN("Invalid vertex in-variable <{}>", "Please use only {}"),
+    INVALID_IEDIRECTIVE("Invalid IEDirective", "Please use only 'in' or 'out'");
 
     private String errorName;
     private String errorDetail;

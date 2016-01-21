@@ -3,16 +3,13 @@ package test;
 import glacier.parser.CompilationResult;
 import org.junit.Test;
 
-import static glacier.error.GlacierErrorType.MISSING_FRAGMENT;
-import static glacier.error.GlacierErrorType.MISSING_HEADER;
-import static glacier.error.GlacierErrorType.MISSING_VERTEX;
-
 public class VertTests extends  GlacierBaseTest {
 
     private CompilationResult compileVertPart(String vert) {
         String shader=
                 "shader test\n" +
-                "draw geometry\n\n" +
+                "draw geometry\n" +
+                "context []\n\n" +
                 "vert\n\t" +
                 vert +
                 "\nfrag\n" +

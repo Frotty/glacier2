@@ -1,19 +1,15 @@
 package glacier.builder.cdefinitions;
 
-import java.util.Arrays;
-import org.antlr.v4.runtime.tree.ErrorNode;
-import org.antlr.v4.runtime.tree.ParseTree;
-import org.antlr.v4.runtime.tree.ParseTreeVisitor;
-import org.antlr.v4.runtime.tree.RuleNode;
-import org.antlr.v4.runtime.tree.TerminalNode;
-
 import antlr4.GlacierParser.StatementsBlockContext;
+import org.antlr.v4.runtime.tree.*;
+
+import java.util.Arrays;
 
 public class Function {
-	String name;
-	String[] args;
-	String returnType;
-	String body;
+	private String name;
+	private String[] args;
+	private String returnType;
+	private String body;
 	static Function mainFunc;
 	
 	public Function(String name, String[] args, String returnType, StatementsBlockContext body2, boolean main) {

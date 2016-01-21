@@ -22,4 +22,8 @@ public class GlacierError {
     public String print() {
         return "(" + line + ":" + startPos + ")" + errorType.print(inlineData);
     }
+
+    public int getEndPos() {
+        return endPos;
+    }
 }

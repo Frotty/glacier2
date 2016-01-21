@@ -1,26 +1,13 @@
 package glacier.visitors;
 
-import glacier.builder.cdefinitions.AttributeDef;
-import glacier.builder.cdefinitions.MatrixDef;
+import antlr4.GlacierBaseVisitor;
+import antlr4.GlacierParser.*;
 import glacier.builder.cdefinitions.UniformDef;
 import glacier.builder.cdefinitions.VariableDef;
-import glacier.error.GlacierError;
 import glacier.error.GlacierErrorType;
 import glacier.parser.CompilationResult;
 import glacier.parser.VariableManager;
 import glacier.parser.VariableManager.GlobalType;
-
-import antlr4.GlacierBaseVisitor;
-import antlr4.GlacierParser.ExprMemberVarContext;
-import antlr4.GlacierParser.OutBlockContext;
-import antlr4.GlacierParser.ShaderProgContext;
-import antlr4.GlacierParser.UniformsBlockContext;
-import antlr4.GlacierParser.VarDefContext;
-import org.antlr.v4.runtime.ParserRuleContext;
-import org.antlr.v4.runtime.Token;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class EvalVisitor extends GlacierBaseVisitor<String> {
     private final CompilationResult compilationResult;
@@ -32,7 +19,6 @@ public class EvalVisitor extends GlacierBaseVisitor<String> {
         varManager = variableManager;
         this.compilationResult = compilationResult;
     }
-
 
     @Override
     public String visitShaderProg(ShaderProgContext ctx) {
@@ -119,6 +105,8 @@ public class EvalVisitor extends GlacierBaseVisitor<String> {
                     } else {
                         throw new UnsupportedOperationException("Undefined out variable: " + ctx.varname.getText());
                     }
+                default:
+                    compilationResult.error(ctx, GlacierErrorType.INVALID_IEDIRECTIVE);
             }
         }
         return "";

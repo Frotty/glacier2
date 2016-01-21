@@ -1,14 +1,10 @@
 shader GBuffer
 draw geometry
+context []
 
 vert
-	in
 	out
 		vec4 pos, vec3 normal, vec2 texCoord
-	trans
-		world, normal, proj, view, mvp
-	mat
-		diffuseTexture
 
 	main()
 		out.pos = trans.world * vec4(in.pos,1.0)
@@ -22,9 +18,6 @@ vert
 frag
 	out
 		albedo, aux, pos
-	mat
-		diffuseTexture
-
 
 	main()
 		vec3 albedo = texture(mat.diffuseTexture, in.texCoord).rgb

@@ -1,36 +1,20 @@
 package glacier.print;
 
-import java.util.ArrayList;
-
+import antlr4.GlacierParser.*;
+import glacier.parser.ShortcutManager;
+import glacier.parser.ShortcutManager.Shortcut;
 import glacier.visitors.TypeVisitor;
 import org.antlr.v4.runtime.ParserRuleContext;
 
-import glacier.parser.ShortcutManager;
-import glacier.parser.ShortcutManager.Shortcut;
-import antlr4.GlacierParser.ArgumentsContext;
-import antlr4.GlacierParser.ExprContext;
-import antlr4.GlacierParser.ExprFunctionCallContext;
-import antlr4.GlacierParser.ExprListContext;
-import antlr4.GlacierParser.ExprMemberVarContext;
-import antlr4.GlacierParser.ExprPrimaryContext;
-import antlr4.GlacierParser.ExprVarAccessContext;
-import antlr4.GlacierParser.FragmentShaderContext;
-import antlr4.GlacierParser.FunctionBlockContext;
-import antlr4.GlacierParser.LocalVarDefContext;
-import antlr4.GlacierParser.OutBlockContext;
-import antlr4.GlacierParser.ShaderBlockContext;
-import antlr4.GlacierParser.StmtReturnContext;
-import antlr4.GlacierParser.StmtSetContext;
-import antlr4.GlacierParser.UniformsBlockContext;
-import antlr4.GlacierParser.VarDefContext;
+import java.util.ArrayList;
 
 public class GLSLPrintVisitor extends PrintVisitor {
-    boolean isFragment = false;
+    private boolean isFragment = false;
     private ShortcutManager scman = new ShortcutManager();
     private ArrayList<String> outVars = new ArrayList<>();
     private int layoutCount = 0;
 
-    TypeVisitor typeVisitor;
+    private TypeVisitor typeVisitor;
 
     public GLSLPrintVisitor(ArrayList<String> vertexVarying, TypeVisitor typeVisitor) {
         this.typeVisitor = typeVisitor;

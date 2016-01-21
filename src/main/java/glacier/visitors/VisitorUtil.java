@@ -1,6 +1,5 @@
 package glacier.visitors;
 
-import antlr4.GlacierParser;
 import org.antlr.v4.runtime.ParserRuleContext;
 import org.antlr.v4.runtime.Token;
 

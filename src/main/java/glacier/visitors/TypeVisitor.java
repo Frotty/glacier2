@@ -24,6 +24,7 @@ public class TypeVisitor extends GlacierBaseVisitor<String> {
 				// Is a multiplication
 				// Fix "mul(mat4, vec3)"
 				if(visit(ctx.left).equals("mat4") && visit(ctx.right).equals("vec3")) {
+					System.out.println("Fix mul(mat4, vec3)");
 				}
 			}
 		}
@@ -45,6 +46,7 @@ public class TypeVisitor extends GlacierBaseVisitor<String> {
 	public String visitExprPrimary(ExprPrimaryContext ctx) {
 		if (ctx.varname != null) {
 			// Local variable ?
+			System.out.println("local var");
 		}
 		return "primaryUnknown";
 	}
