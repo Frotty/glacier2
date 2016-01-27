@@ -3,18 +3,15 @@ package glacier.parser;
 import antlr4.GlacierBaseListener;
 import antlr4.GlacierListener;
 import antlr4.GlacierParser;
-import glacier.builder.LibgdxBuilder;
+import glacier.print.GLSLPrintVisitor;
 import glacier.print.PrettyPrintVisitor;
 import glacier.util.ExtendedLexer;
 import glacier.visitors.EvalVisitor;
-import glacier.print.GLSLPrintVisitor;
-import glacier.visitors.HeaderVisitor;
 import glacier.visitors.TypeVisitor;
 import org.antlr.v4.runtime.ANTLRInputStream;
 import org.antlr.v4.runtime.CommonTokenStream;
 import org.antlr.v4.runtime.tree.ParseTreeWalker;
 
-import java.io.IOException;
 import java.util.ArrayList;
 
 public class GlacierCompiler {
@@ -31,10 +28,15 @@ public class GlacierCompiler {
         // The result
         CompilationResult result = new CompilationResult();
         // Start compilation
-        VariableManager variableManager = new VariableManager();
+        VarManager variableManager = new VarManager();
+
         result.log("Evaluation Visitor..");
         EvalVisitor evalVisitor = new EvalVisitor(variableManager, result);
         evalVisitor.visit(tree);
+        if(result.hasErrors()) {
+            return result;
+        }
+
         result.log("Type Visitor..");
         TypeVisitor tV = new TypeVisitor(variableManager, false);
         result.log("Printing..");
@@ -53,16 +55,16 @@ public class GlacierCompiler {
 
         // Print Shader Class
         if (compilationConfig.isGenerateLibgdx()) {
-            LibgdxBuilder libgdxBuilder = new LibgdxBuilder();
-            try {
-                if (evalVisitor.headerV.drawDirective == HeaderVisitor.DrawDirective.FULLSCREEN) {
-                    result.javaShaderSrc = libgdxBuilder.build(result.name, variableManager, evalVisitor.headerV, compilationConfig.getFullscreenTemplate());
-                } else {
-                    result.javaShaderSrc = libgdxBuilder.build(result.name, variableManager, evalVisitor.headerV, compilationConfig.getGeometryTemplate());
-                }
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+//    TODO        LibgdxBuilder libgdxBuilder = new LibgdxBuilder();
+//            try {
+//                if (evalVisitor.headerV.drawDirective == HeaderVisitor.DrawDirective.FULLSCREEN) {
+//                    result.javaShaderSrc = libgdxBuilder.build(result.name, variableManager, evalVisitor.headerV, compilationConfig.getFullscreenTemplate());
+//                } else {
+//                    result.javaShaderSrc = libgdxBuilder.build(result.name, variableManager, evalVisitor.headerV, compilationConfig.getGeometryTemplate());
+//                }
+//            } catch (IOException e) {
+//                e.printStackTrace();
+//            }
         } else {
             result.log("Not generating libgdx");
         }
@@ -77,7 +79,7 @@ public class GlacierCompiler {
         visitor = new GLSLPrintVisitor(al, tV);
         visitor.visit(tree.fragmentShader());
         result.fragmentShader = visitor.out();
-        result.renderTargets = variableManager.getRenderTargetCount();
+// TODO        result.renderTargets = variableManager.getRenderTargetCount();
 
         PrettyPrintVisitor prettyPrintVisitor = new PrettyPrintVisitor();
         prettyPrintVisitor.visit(tree);

@@ -15,4 +15,11 @@ public class ValidTests extends GlacierBaseTest {
         assertErrors(compilationResult.errors);
     }
 
+    @Test
+    public void test2() throws IOException, URISyntaxException {
+        String shader = loadTestFile("/testShaders/test2.gl");
+        CompilationResult compilationResult = compileShader(shader);
+        assertErrors(compilationResult.errors);
+    }
+
 }

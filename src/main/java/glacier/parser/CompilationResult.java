@@ -37,6 +37,7 @@ public class CompilationResult {
     }
 
     public void error(ParserRuleContext ruleContext, GlacierErrorType errorType, String... inlineData) {
+        System.err.println("<" + (System.currentTimeMillis() - startTime) + "ms> " + errorType.print(inlineData) + "\n");
         errors.add(new GlacierError(ruleContext.start.getLine(), ruleContext.start.getCharPositionInLine(), ruleContext.stop.getCharPositionInLine(),
                 errorType, inlineData));
     }
@@ -50,10 +51,10 @@ public class CompilationResult {
     }
 
     public boolean hasErrors() {
-        return counter > 0;
+        return !errors.isEmpty();
     }
 
     public int getErrorCount() {
-        return counter;
+        return errors.size();
     }
 }

@@ -4,6 +4,17 @@ public class UniformDef implements Definition {
 	private String type;
 	private String nameL;
 	private String nameU;
+	int usages = 0;
+
+	@Override
+	public int getUsages() {
+		return usages;
+	}
+
+	@Override
+	public void incrementUsage() {
+		usages++;
+	}
 
 	public UniformDef(String type, String name) {
 		this.type = type;

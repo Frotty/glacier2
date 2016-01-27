@@ -1,10 +1,9 @@
 package test;
 
-import static glacier.error.GlacierErrorType.*;
-
 import glacier.parser.CompilationResult;
-import org.junit.Assert;
 import org.junit.Test;
+
+import static glacier.error.GlacierErrorType.*;
 
 public class BasicTests extends GlacierBaseTest {
 
@@ -64,7 +63,7 @@ public class BasicTests extends GlacierBaseTest {
                 "context []\n" +
                 "frag\n";
         CompilationResult compilationResult = compileShader(shader);
-        Assert.assertTrue(compilationResult.errors.isEmpty());
+        assertErrors(compilationResult.errors, MISSING_VERTEX);
     }
 
 

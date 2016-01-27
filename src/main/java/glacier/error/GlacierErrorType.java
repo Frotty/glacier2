@@ -11,7 +11,8 @@ public enum GlacierErrorType {
     INVALID_DRAW_DIRECT("Invalid draw directive", "Please use either fullscreen or geometry."),
     INVALID_CONTEXT_OPT("Invalid context options", "Please use any of []."),
     INVALID_VERTEX_IN("Invalid vertex in-variable <{}>", "Please use only {}"),
-    INVALID_IEDIRECTIVE("Invalid IEDirective", "Please use only 'in' or 'out'");
+    INVALID_IEDIRECTIVE("Invalid IEDirective <{}>", "Please use only 'in' or 'out'"),
+    VAR_NOT_FOUND("Variable with name <{}> not found in any accesible scope", " {}");
 
     private String errorName;
     private String errorDetail;
@@ -24,7 +25,7 @@ public enum GlacierErrorType {
     public String print(String... inlineData) {
         String error = "Error(id:" + ordinal() + ") " + errorName + ": " + errorDetail;
         for (String dat : inlineData) {
-            error = error.replaceFirst("[{}]", dat);
+            error = error.replaceFirst("\\{\\}", dat);
         }
         return error;
     }

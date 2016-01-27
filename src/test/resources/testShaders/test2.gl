@@ -12,8 +12,6 @@ vert
 		out.texCoord = in.texCoord
 		gl_Pos = trans.mvp * vec4(in.pos,1.0)
 
-	void blub()
-
 
 frag
 	out

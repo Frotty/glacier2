@@ -1,20 +1,17 @@
 package glacier.visitors;
 
-import glacier.builder.cdefinitions.Definition;
-import glacier.parser.VariableManager;
-import glacier.parser.VariableManager.GlobalType;
 import antlr4.GlacierBaseVisitor;
 import antlr4.GlacierParser.ExprContext;
 import antlr4.GlacierParser.ExprPrimaryContext;
+import glacier.parser.VarManager;
 
 public class TypeVisitor extends GlacierBaseVisitor<String> {
-	private VariableManager varManager;
-	private boolean vert;
+	private VarManager varManager;
 
-	public TypeVisitor(VariableManager varManager, boolean vert) {
+	public TypeVisitor(VarManager varManager, boolean vert) {
 		this.varManager = varManager;
-		this.vert = vert;
 	}
+
 
 	@Override
 	public String visitExpr(ExprContext ctx) {
@@ -29,14 +26,13 @@ public class TypeVisitor extends GlacierBaseVisitor<String> {
 			}
 		}
 		if(ctx.ieD != null && ctx.varName != null) {
-			System.out.println(GlobalType.valueOf(ctx.ieD.getText().toUpperCase()));
-			System.out.println(ctx.varName.getText());
-			Definition global = varManager.getGlobal(GlobalType.valueOf(ctx.ieD.getText().toUpperCase()), vert, ctx.varName.getText());
-			if(global != null) {
-				return global.getType();
-			} else {
-				return "unknown";
-			}
+//			System.out.println(ctx.varName.getText());
+//			Definition global = varManager.getGlobal(GlobalType.valueOf(ctx.ieD.getText().toUpperCase()), vert, ctx.varName.getText());
+//			if(global != null) {
+//				return global.getType();
+//			} else {
+//				return "unknown";
+//			}
 			
 		}
 		return "";
@@ -51,7 +47,4 @@ public class TypeVisitor extends GlacierBaseVisitor<String> {
 		return "primaryUnknown";
 	}
 
-	public VariableManager getVariableManager() {
-		return varManager;
-	}
 }

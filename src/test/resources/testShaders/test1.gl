@@ -1,31 +1,20 @@
-shader GBuffer
-draw geometry
+shader SkeletonShader
+draw fullscreen
 context []
 
 vert
-	out
-		vec4 pos, vec3 normal, vec2 texCoord
 
 	main()
-		out.pos = trans.world * vec4(in.pos,1.0)
-		out.normal = norm(trans.normal * in.normal)
-		out.texCoord = in.texCoord
 		gl_Pos = trans.mvp * vec4(in.pos,1.0)
 
-	void blub()
 
 
 frag
 	out
-		albedo, aux, pos
+		albedo
 
 	main()
-		vec3 albedo = texture(mat.diffuseTexture, in.texCoord).rgb
-		// Albedo (color-tinted diffuse)
-		out.albedo = vec4(albedo,1.0)//vec4(albedo, 1.0)
-		// Material Properties
-		out.aux = vec4(1,0,0, 1.0)
-		out.pos = in.pos
+		out.albedo = vec4(1,1,1,1.0)
 
 
 

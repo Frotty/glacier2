@@ -31,6 +31,7 @@ public class GlacierBaseTest {
     }
 
     protected void assertErrors(List<GlacierError> actual, GlacierErrorType... expected) {
+        System.out.println("Found: " + actual.size() + " errors");
         ArrayList expectList = new ArrayList(Arrays.<GlacierErrorType>asList(expected));
         if (expectList.isEmpty() && !actual.isEmpty()) {
             Assert.fail();

@@ -10,15 +10,22 @@ public class VisitorUtil {
         if (context != null) {
             Token start = context.start;
             Token stop = context.stop;
+            String s = context.getText().trim().replaceAll("(\\s|\\$NL)+", "");
+            System.out.println("shit: <" + s + ", " + s.length() + ">");
             return !(context.isEmpty()
                     || (start == null)
                     || (stop == null)
-                    || (((stop.getLine() - start.getLine()) <= 0) && (stop.getCharPositionInLine() - start.getCharPositionInLine()) <= 0));
+                    || s.length() <= 0
+                    || (((stop.getLine() - start.getLine()) <= 0) && (stop.getCharPositionInLine() - start.getCharPositionInLine()) < 0));
         }
         return false;
     }
 
     public static boolean hasSize(List<?> vardefs) {
         return vardefs == null || vardefs.isEmpty();
+    }
+
+    public static boolean hasSize(Token directiveKey) {
+        return directiveKey != null ? directiveKey.getText().trim().length() > 0 : false;
     }
 }

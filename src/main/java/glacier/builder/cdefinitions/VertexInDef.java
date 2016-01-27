@@ -1,14 +1,15 @@
 package glacier.builder.cdefinitions;
 
+public enum VertexInDef implements Definition {
+    POS("pos", "vec3"), NORMAL("normal", "vec3"), TEXCOORD("texCoord", "vec2");
 
-public enum MaterialDef implements Definition {
-    DIFFUSETEXTURE() {
-        @Override
-        public String generateShaderUniDef() {
-            return "uniform sampler2D m_diffuseTexture;";
-        }
+    private final String name;
+    private final String type;
 
-    }, DIFFUSECOLOR;
+    VertexInDef(String name, String type) {
+        this.name = name;
+        this.type = type;
+    }
 
     int usages = 0;
 
@@ -23,8 +24,13 @@ public enum MaterialDef implements Definition {
     }
 
     @Override
-    public String generateLocVarSet() {
-        return null;
+    public String getName() {
+        return name;
+    }
+
+    @Override
+    public String getType() {
+        return type;
     }
 
     @Override
@@ -59,17 +65,13 @@ public enum MaterialDef implements Definition {
 
     @Override
     public String generateShaderUniDef() {
-        return null;
+        return "";
     }
 
     @Override
-    public String getName() {
+    public String generateLocVarSet() {
         return null;
     }
 
-    @Override
-    public String getType() {
-        return null;
-    }
 
 }

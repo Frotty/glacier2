@@ -4,6 +4,18 @@ public class VariableDef implements Definition {
 	public String name;
 	public String type;
 	public int uses = 0;
+
+	int usages = 0;
+
+	@Override
+	public int getUsages() {
+		return usages;
+	}
+
+	@Override
+	public void incrementUsage() {
+		usages++;
+	}
 	
 	public VariableDef(String name,	String type) {
 		this.name = name;

@@ -1,29 +1,31 @@
 package glacier.visitors;
 
-import antlr4.GlacierBaseVisitor;
 import antlr4.GlacierParser.*;
 import glacier.builder.cdefinitions.UniformDef;
 import glacier.builder.cdefinitions.VariableDef;
 import glacier.error.GlacierErrorType;
 import glacier.parser.CompilationResult;
-import glacier.parser.VariableManager;
-import glacier.parser.VariableManager.GlobalType;
+import glacier.parser.VarManager;
+import org.antlr.v4.runtime.ParserRuleContext;
 
-public class EvalVisitor extends GlacierBaseVisitor<String> {
+public class EvalVisitor extends ExtendedVisitor {
     private final CompilationResult compilationResult;
-    private VariableManager varManager;
-    private boolean vert = true;
-    public HeaderVisitor headerV;
+    private final EvalResult evalResult;
+    private final VarManager varManager;
 
-    public EvalVisitor(VariableManager variableManager, CompilationResult compilationResult) {
+    private boolean vert = true;
+
+    public EvalVisitor(VarManager variableManager, CompilationResult compilationResult) {
         varManager = variableManager;
         this.compilationResult = compilationResult;
+        this.evalResult = new EvalResult();
     }
 
     @Override
     public String visitShaderProg(ShaderProgContext ctx) {
         compilationResult.lastProcessedToken = ctx.start;
         if (VisitorUtil.hasSize(ctx.nameDeclaration())) {
+            compilationResult.log("Name exists.. <" + ctx.nameDeclaration().getText() + ">");
             if (ctx.nameDeclaration().shaderName != null) {
                 compilationResult.name = ctx.nameDeclaration().shaderName.getText() + "Gen";
                 compilationResult.lastProcessedToken = ctx.nameDeclaration().stop;
@@ -35,13 +37,14 @@ public class EvalVisitor extends GlacierBaseVisitor<String> {
             compilationResult.error(compilationResult.lastProcessedToken, GlacierErrorType.MISSING_NAME);
         }
         if (VisitorUtil.hasSize(ctx.glacierHeader())) {
-            compilationResult.log("Header Visitor..");
-            headerV = new HeaderVisitor(compilationResult);
-            headerV.visit(ctx);
+            compilationResult.log("Header Visitor.. <" + ctx.glacierHeader().getText() + ">");
+            HeaderVisitor headerV = new HeaderVisitor(evalResult, compilationResult);
+            headerV.visit(ctx.glacierHeader());
         } else {
             compilationResult.error(compilationResult.lastProcessedToken, GlacierErrorType.MISSING_HEADER);
         }
-        if (VisitorUtil.hasSize(ctx.vertexShader())) {
+        if (VisitorUtil.hasSize(ctx.vertexShader().shaderBlock())) {
+            compilationResult.log("vertex shader exists");
             compilationResult.lastProcessedToken = ctx.vertexShader().start;
             visit(ctx.vertexShader());
             compilationResult.lastProcessedToken = ctx.vertexShader().stop;
@@ -50,6 +53,7 @@ public class EvalVisitor extends GlacierBaseVisitor<String> {
         }
         vert = false;
         if (VisitorUtil.hasSize(ctx.fragmentShader())) {
+            compilationResult.log("fragment shader exists : <" + ctx.fragmentShader().getText() + ">");
             compilationResult.lastProcessedToken = ctx.fragmentShader().start;
             visit(ctx.fragmentShader());
             compilationResult.lastProcessedToken = ctx.fragmentShader().stop;
@@ -61,8 +65,8 @@ public class EvalVisitor extends GlacierBaseVisitor<String> {
 
     @Override
     public String visitOutBlock(OutBlockContext ctx) {
-        System.out.println("out");
         if (VisitorUtil.hasSize(ctx.outArgs)) {
+            System.out.println("visit: " + ctx.outArgs.vardefs.size());
             for (VarDefContext outdef : ctx.outArgs.vardefs) {
                 System.out.println("added: " + outdef.varName.getText());
                 VariableDef vdef;
@@ -71,7 +75,7 @@ public class EvalVisitor extends GlacierBaseVisitor<String> {
                 } else {
                     vdef = new VariableDef(outdef.varName.getText(), "vec4");
                 }
-                varManager.saveGlobal(GlobalType.OUT, vert, vdef);
+                varManager.saveVar(getShaderPart(ctx), vdef);
             }
         }
         return "";
@@ -79,79 +83,44 @@ public class EvalVisitor extends GlacierBaseVisitor<String> {
 
     @Override
     public String visitUniformsBlock(UniformsBlockContext ctx) {
+        System.out.println("visit uni");
         if (VisitorUtil.hasSize(ctx.uniformArgs)) {
             for (VarDefContext unidef : ctx.uniformArgs.vardefs) {
                 UniformDef def = new UniformDef(unidef.varType.getText(), unidef.varName.getText());
-                varManager.saveGlobal(GlobalType.UNI, vert, def);
-            }
-        }
-        return "uniBlock";
-    }
-
-    @Override
-    public String visitExprMemberVar(ExprMemberVarContext ctx) {
-        if (ctx.ieDirect != null) {
-            // Is Implicit Access
-            switch (ctx.ieDirect.getText()) {
-                case "in":
-                    if (varManager.globalExists(GlobalType.IN, vert, ctx.varname.getText())) {
-                        return toOutInVar(ctx.varname.getText());
-                    } else {
-                        throw new UnsupportedOperationException("Undefine in variable " + ctx.varname.getText());
-                    }
-                case "out":
-                    if (varManager.globalExists(GlobalType.OUT, vert, ctx.varname.getText())) {
-                        return toOutInVar(ctx.varname.getText());
-                    } else {
-                        throw new UnsupportedOperationException("Undefined out variable: " + ctx.varname.getText());
-                    }
-                default:
-                    compilationResult.error(ctx, GlacierErrorType.INVALID_IEDIRECTIVE);
+                varManager.saveVar(getShaderPart(ctx), def);
             }
         }
         return "";
     }
 
-    private String toOutInVar(String text) {
-        switch (text) {
-            case "pos":
-                return "v_position";
-            case "normal":
-                return "v_normal";
-            case "texCoord":
-                return "v_texCoord0";
-            default:
-                return "v_" + text;
+    @Override
+    public String visitExprMemberVar(ExprMemberVarContext ctx) {
+        ParserRuleContext shaderPart = getShaderPart(ctx);
+        if (ctx.ieDirect != null) {
+            System.out.println("Visiting: " + ctx.getText() + " : " + shaderPart + " varname: <" + ctx.varname.getText() + ">");
+            // Is Implicit Access
+            String directive = ctx.ieDirect.getText().trim().toLowerCase();
+            switch (directive) {
+                case "in":
+                    if (varManager.varExists(VarManager.DefaultScope.VERT_IN, ctx.varname.getText())) {
+                        varManager.getVar(VarManager.DefaultScope.VERT_IN, ctx.varname.getText()).incrementUsage();
+                    } else {
+                        compilationResult.error(ctx, GlacierErrorType.VAR_NOT_FOUND, ctx.varname.getText());
+                    }
+                    break;
+                case "out":
+                    if (varManager.varExists(shaderPart, ctx.varname.getText())) {
+                        varManager.getVar(shaderPart, ctx.varname.getText()).incrementUsage();
+                    } else {
+                        compilationResult.error(ctx, GlacierErrorType.VAR_NOT_FOUND, ctx.varname.getText(), shaderPart.toString());
+                    }
+                    break;
+                default:
+                    compilationResult.error(ctx, GlacierErrorType.INVALID_IEDIRECTIVE, directive);
+                    break;
+            }
         }
+        return "";
     }
-
-//	public String getVarType(String iED, String text) {
-//		switch (iED) {
-//		case "in":
-//			if (inReg.containsKey(text)) {
-//				return inReg.get(text).type;
-//			}
-//		case "out":
-//			if (outReg.containsKey(text)) {
-//				return outReg.get(text).type;
-//			}
-//		case "mats":
-//			if (matReg.containsKey(text)) {
-//				switch (text) {
-//				case "mvp":
-//					return MatrixDef.MVP.generateShaderUniDef().substring(8, 12);
-//				case "view":
-//					return MatrixDef.VIEW.generateShaderUniDef().substring(8, 12);
-//				case "normal":
-//					return MatrixDef.NORMAL.generateShaderUniDef().substring(8, 12);
-//				case "world":
-//					return MatrixDef.WORLD.generateShaderUniDef().substring(8, 12);
-//				case "proj":
-//					return MatrixDef.PROJ.generateShaderUniDef().substring(8, 12);
-//				}
-//			}
-//		}
-//		return "unknown";
-//	}
 
 }
