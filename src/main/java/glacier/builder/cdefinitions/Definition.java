@@ -3,26 +3,24 @@ package glacier.builder.cdefinitions;
 public interface Definition {
     String getName();
 
-    abstract String getType();
+    String getType();
 
-    abstract String generateLocVarSet();
+    String generateLocVarSet();
 
-    abstract String generateLocVarDef();
+    String generateLocVarDef();
 
-    abstract String generateInit();
+    String generateInit();
 
-    abstract String generateBlock();
+    String generateBlock();
 
-    abstract String generateInstance();
+    String generateInstance();
 
-    abstract String generateShaderInDef();
+    String generateShaderDef();
 
-    abstract String generateShaderOutDef();
+    String generateShaderAccess();
 
-    abstract String generateShaderUniDef();
+    int getUsages(boolean vert);
 
-    abstract int getUsages();
-
-    abstract void incrementUsage();
+    void incrementUsage(boolean vert);
 
 }

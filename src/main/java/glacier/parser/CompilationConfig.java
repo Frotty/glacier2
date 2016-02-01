@@ -4,7 +4,7 @@ package glacier.parser;
 public class CompilationConfig {
     private final String glacierShader;
     private boolean generateLibgdx = false;
-    public boolean generateGLSL = true;
+    private boolean generateGLSL = false;
     public String outputLocation = "/";
     private String geometryTemplate = "";
     private String fullscreenTemplate = "";
@@ -33,5 +33,13 @@ public class CompilationConfig {
 
     public boolean isGenerateLibgdx() {
         return generateLibgdx;
+    }
+
+    public boolean isGenerateGLSL() {
+        return generateGLSL;
+    }
+
+    public void setGenerateGLSL(boolean generateGLSL) {
+        this.generateGLSL = generateGLSL;
     }
 }

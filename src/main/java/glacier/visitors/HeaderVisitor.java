@@ -18,15 +18,19 @@ public class HeaderVisitor extends GlacierBaseVisitor<String> {
     @Override
     public String visitGlacierHeader(GlacierHeaderContext ctx) {
         compilationResult.lastProcessedToken = ctx.start;
-        if (VisitorUtil.hasSize(ctx.drawDirective()) && VisitorUtil.hasSize(ctx.drawDirective().directiveKey)) {
-            String drawDirectiveS = ctx.drawDirective().directiveKey.getText();
-            try {
-                evalResult.setDrawDirective(DrawDirective.valueOf(drawDirectiveS.toUpperCase()));
-            } catch (IllegalArgumentException e) {
-                compilationResult.error(compilationResult.lastProcessedToken, GlacierErrorType.INVALID_DRAW_DIRECT);
+        if (VisitorUtil.hasSize(ctx)) {
+            if (VisitorUtil.hasSize(ctx.directiveKey)) {
+                String drawDirectiveS = ctx.directiveKey.getText();
+                try {
+                    evalResult.setDrawDirective(DrawDirective.valueOf(drawDirectiveS.toUpperCase()));
+                } catch (IllegalArgumentException e) {
+                    compilationResult.error(compilationResult.lastProcessedToken, GlacierErrorType.INVALID_DRAW_DIRECT);
+                }
+            } else {
+                compilationResult.error(ctx, GlacierErrorType.MISSING_DRAW_DIRECT);
             }
-            if (VisitorUtil.hasSize(ctx.contextOptions())) {
-                for (ContextOptContext co : ctx.contextOptions().options) {
+            if (VisitorUtil.hasSize(ctx.options)) {
+                for (ContextOptContext co : ctx.options) {
                     try {
                         ContextOption contextOption = ContextOption.valueOf(co.optionName.getText());
                         evalResult.addContextOption(contextOption);
@@ -37,10 +41,9 @@ public class HeaderVisitor extends GlacierBaseVisitor<String> {
             } else {
                 compilationResult.error(compilationResult.lastProcessedToken, GlacierErrorType.MISSING_CONTEXT_OPT);
             }
-        } else {
-            compilationResult.error(ctx.drawDirective(), GlacierErrorType.MISSING_DRAW_DIRECT);
+
+
         }
         return "";
     }
-
 }

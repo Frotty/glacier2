@@ -5,7 +5,7 @@ import org.antlr.v4.runtime.ParserRuleContext;
 
 import static antlr4.GlacierParser.*;
 
-public class ExtendedVisitor extends GlacierBaseVisitor<String> {
+public class ExtendedVisitor<T extends String> extends GlacierBaseVisitor<String> {
     private ShaderProgContext root;
 
     @Override

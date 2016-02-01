@@ -30,6 +30,7 @@ public class GlacierBaseTest {
         return new String(Files.readAllBytes(resourcePath), Charset.defaultCharset());
     }
 
+
     protected void assertErrors(List<GlacierError> actual, GlacierErrorType... expected) {
         System.out.println("Found: " + actual.size() + " errors");
         ArrayList expectList = new ArrayList(Arrays.<GlacierErrorType>asList(expected));
@@ -43,12 +44,34 @@ public class GlacierBaseTest {
     }
 
     protected CompilationResult compileShader(String shader) {
+        return compileShader(shader, false);
+    }
+
+    protected CompilationResult compileShader(String shader, boolean glsl) {
         CompilationConfig config = new CompilationConfig(shader);
+        config.setGenerateGLSL(glsl);
         CompilationResult result = glacierCompiler.compileShader(config);
-        result.printLog();
         result.printErrors();
         System.out.println(result.vertexShader);
         return result;
+    }
+
+    protected CompilationResult compileVertPart(String vert) {
+        return compileVertPart(vert, false);
+    }
+
+    protected CompilationResult compileVertPart(String vert, boolean glsl) {
+        String shader=
+                "shader test\n" +
+                        "draw geometry\n" +
+                        "context []\n\n" +
+                        "vert\n\t" +
+                        vert +
+                        "\nfrag\n" +
+                        "\tout\n" +
+                        "\t\tbuff\n" +
+                        "\tmain()\n";
+        return compileShader(shader, glsl);
     }
 
     @Before

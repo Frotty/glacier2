@@ -4,16 +4,21 @@ public class UniformDef implements Definition {
 	private String type;
 	private String nameL;
 	private String nameU;
-	int usages = 0;
+	private int fragUsages = 0;
+	private int vertUsages = 0;
 
 	@Override
-	public int getUsages() {
-		return usages;
+	public int getUsages(boolean vert) {
+		return vert ? vertUsages : fragUsages;
 	}
 
 	@Override
-	public void incrementUsage() {
-		usages++;
+	public void incrementUsage(boolean vert) {
+		if (vert) {
+			vertUsages++;
+		} else {
+			fragUsages++;
+		}
 	}
 
 	public UniformDef(String type, String name) {
@@ -46,18 +51,13 @@ public class UniformDef implements Definition {
 	}
 
 	@Override
-	public String generateShaderInDef() {
-		return "";
-	}
-
-	@Override
-	public String generateShaderOutDef() {
-		return "";
-	}
-
-	@Override
-	public String generateShaderUniDef() {
+	public String generateShaderDef() {
 		return "uniform " + type + " " + nameL + ";\n";
+	}
+
+	@Override
+	public String generateShaderAccess() {
+		return getName();
 	}
 
 	@Override

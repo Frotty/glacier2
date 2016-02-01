@@ -20,26 +20,26 @@ public class PrettyPrintVisitor extends PrintVisitor {
     }
 
 
-    @Override
-    public String visitDrawDirective(GlacierParser.DrawDirectiveContext ctx) {
-        if (VisitorUtil.hasSize(ctx)) {
-            print(keyword("draw ") + ctx.directiveKey.getText());
-            newline();
-        }
-        return "";
-    }
-
-
-    @Override
-    public String visitContextOptions(GlacierParser.ContextOptionsContext ctx) {
-        if (VisitorUtil.hasSize(ctx)) {
-            print(keyword("context") + " [");
-            ctx.options.forEach(this::visit);
-            print("]");
-            newline();
-        }
-        return "";
-    }
+//    @Override
+//    public String visitDrawDirective(GlacierParser.DrawDirectiveContext ctx) {
+//        if (VisitorUtil.hasSize(ctx)) {
+//            print(keyword("draw ") + ctx.directiveKey.getText());
+//            newline();
+//        }
+//        return "";
+//    }
+//
+//
+//    @Override
+//    public String visitContextOptions(GlacierParser.ContextOptionsContext ctx) {
+//        if (VisitorUtil.hasSize(ctx)) {
+//            print(keyword("context") + " [");
+//            ctx.options.forEach(this::visit);
+//            print("]");
+//            newline();
+//        }
+//        return "";
+//    }
 
     @Override
     public String visitContextOpt(GlacierParser.ContextOptContext ctx) {

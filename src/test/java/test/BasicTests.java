@@ -26,7 +26,7 @@ public class BasicTests extends GlacierBaseTest {
         String shader = "shader test\n" +
                 "draw fullscreen\n";
         CompilationResult compilationResult = compileShader(shader);
-        assertErrors(compilationResult.errors, MISSING_CONTEXT_OPT, MISSING_VERTEX, MISSING_FRAGMENT);
+        assertErrors(compilationResult.errors, MISSING_VERTEX, MISSING_FRAGMENT);
     }
 
     @Test

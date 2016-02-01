@@ -1,8 +1,8 @@
 package glacier.print;
 
-import antlr4.GlacierBaseVisitor;
+import glacier.visitors.ExtendedVisitor;
 
-public abstract class PrintVisitor extends GlacierBaseVisitor<String> {
+public abstract class PrintVisitor<T extends String>  extends ExtendedVisitor<T> {
     protected StringBuilder stringBuilder = new StringBuilder();
     protected String indentLvl = "";
     protected int indentLevel = 0;
@@ -37,6 +37,12 @@ public abstract class PrintVisitor extends GlacierBaseVisitor<String> {
     }
 
     public String out() {
-        return stringBuilder.toString();
+        String shader = stringBuilder.toString();
+        clear();
+        return shader;
+    }
+
+    public void clear() {
+        stringBuilder = new StringBuilder();
     }
 }

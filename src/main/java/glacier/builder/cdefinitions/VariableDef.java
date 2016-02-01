@@ -5,16 +5,21 @@ public class VariableDef implements Definition {
 	public String type;
 	public int uses = 0;
 
-	int usages = 0;
+	private int fragUsages = 0;
+	private int vertUsages = 0;
 
 	@Override
-	public int getUsages() {
-		return usages;
+	public int getUsages(boolean vert) {
+		return vert ? vertUsages : fragUsages;
 	}
 
 	@Override
-	public void incrementUsage() {
-		usages++;
+	public void incrementUsage(boolean vert) {
+		if (vert) {
+			vertUsages++;
+		} else {
+			fragUsages++;
+		}
 	}
 	
 	public VariableDef(String name,	String type) {
@@ -58,18 +63,13 @@ public class VariableDef implements Definition {
 	}
 
 	@Override
-	public String generateShaderInDef() {
+	public String generateShaderDef() {
 		return null;
 	}
 
 	@Override
-	public String generateShaderOutDef() {
-		return null;
-	}
-
-	@Override
-	public String generateShaderUniDef() {
-		return null;
+	public String generateShaderAccess() {
+		return "l_" + name;
 	}
 
 }

@@ -9,99 +9,69 @@ tokens {
 package antlr4;
 }
 
-shaderProg :
+shaderProg:
 	nameDeclaration glacierHeader vertexShader fragmentShader
 ;
 
-nameDeclaration :
+nameDeclaration:
     'shader' shaderName = IDENTIFIER NL+
 ;
 
-glacierHeader :
-	drawDirective NL+ contextOptions?
-;
-
-drawDirective :
-	'draw' directiveKey=('geometry'|'fullscreen')
-;
-
-contextOptions :
-	'context' '[' (options+=contextOpt ',')* options+=contextOpt? ']' NL
+glacierHeader:
+    'draw' directiveKey = IDENTIFIER NL+
+    ('context' '[' (options+=contextOpt ',')* options+=contextOpt? ']' NL)?
 ;
 
 contextOpt:
 	optionName= IDENTIFIER ('=' optionValue = IDENTIFIER)?
 ;
 
-
-vertexShader
-:
-	'vert' NL+ STARTBLOCK? shaderBlock ENDBLOCK? NL*
+vertexShader:
+	'vert' NL+ STARTBLOCK shaderBlock ENDBLOCK NL*
 ;
 
-fragmentShader
-:
-	'frag' NL+ STARTBLOCK? shaderBlock ENDBLOCK NL*
+fragmentShader:
+	'frag' NL+ STARTBLOCK shaderBlock ENDBLOCK NL*
 ;
 
-shaderBlock
-:
+shaderBlock:
 	(outBlock)?
 	(uniformsBlock)?
-	('main()' NL+ mainFunc = statementsBlock)?
 	functions += functionBlock*
 ;
 
-outBlock
-:
+outBlock:
 	'out' NL+ (STARTBLOCK outArgs = list NL+ ENDBLOCK NL*)?
 ;
 
-
-uniformsBlock
-:
+uniformsBlock:
 	'uni' NL+ (STARTBLOCK uniformArgs = list NL* ENDBLOCK NL*)?
 ;
 
-functionBlock
-:
-	returnType = IDENTIFIER funcName = IDENTIFIER  arguements = arguments
+functionBlock:
+	(returnType = IDENTIFIER)? funcName = IDENTIFIER  arguements = arguments
 	NL body = statementsBlock
 ;
 
-varDef
-:
+varDef:
 	(varType = IDENTIFIER)? varName = IDENTIFIER
 ;
 
-list
-:
+list:
 	(vardefs += varDef((','	| NL+) vardefs += varDef)*)?
 ;
 
-arguments
-:
+arguments:
 	'('(vardefs += varDef((','	| NL+) vardefs += varDef)*)? ')'
 ;
 
-statementsBlock
-:
-	(
-		STARTBLOCK stmts += statement* ENDBLOCK
-	)?
+statementsBlock:
+	(STARTBLOCK stmts += statement* ENDBLOCK)?
 ;
 
-statement
-:
-	(
-		localVarDef
-		| stmtSet
-		| stmtReturn
-		| expr
-	) NL
-	| stmtIf
-	| stmtWhile
-	| stmtForLoop
+statement:
+	(localVarDef | stmtSet | stmtReturn	| expr)
+	(NL | stmtIf | stmtWhile | stmtForLoop)
 ;
 
 stmtIf

@@ -2,56 +2,61 @@ package glacier.builder.cdefinitions;
 
 
 public enum TransDef implements Definition {
-    WORLD, NORMAL, PROJ, VIEW, MVP;
-    int usages = 0;
+    WORLD("u_MvpTrans", "m_mvpTrans", false, true),
+    NORMAL("u_NormalTrans", "m_normalTrans", false, false),
+    PROJ("u_ProjTrans", "m_projTrans", false, false),
+    VIEW("u_ViewTrans", "m_viewTrans", false, false),
+    MVP("u_WorldTrans", "m_worldTrans", true, false);
+    private final boolean needsM3;
+    private final boolean needsM4;
+    private final String locVarName;
+    private final String uniformName;
+
+    TransDef(String locVarName, String uniformName, boolean needsM3, boolean needsM4) {
+        this.locVarName = locVarName;
+        this.uniformName = uniformName;
+        this.needsM3 = needsM3;
+        this.needsM4 = needsM4;
+    }
+
+    private int fragUsages = 0;
+    private int vertUsages = 0;
 
     @Override
-    public int getUsages() {
-        return usages;
+    public int getUsages(boolean vert) {
+        return vert ? vertUsages : fragUsages;
     }
 
     @Override
-    public void incrementUsage() {
-        usages++;
+    public void incrementUsage(boolean vert) {
+        if (vert) {
+            vertUsages++;
+        } else {
+            fragUsages++;
+        }
+    }
+
+    @Override
+    public String generateShaderAccess() {
+        return uniformName;
     }
 
 
     @Override
     public String generateLocVarSet() {
-        switch (this) {
-            case MVP:
-                return "\t\tu_MvpTrans = program.getUniformLocation(\"m_mvpTrans\");\n";
-            case NORMAL:
-                return "\t\tu_NormalTrans = program.getUniformLocation(\"m_normalTrans\");\n";
-            case PROJ:
-                return "\t\tu_ProjTrans = program.getUniformLocation(\"m_projTrans\");\n";
-            case VIEW:
-                return "\t\tu_ViewTrans = program.getUniformLocation(\"m_viewTrans\");\n";
-            case WORLD:
-                return "\t\tu_WorldTrans = program.getUniformLocation(\"m_worldTrans\");\n";
-            default:
-                break;
-        }
-        return null;
+        return "\t\t" + locVarName + " = program.getUniformLocation(\"" + uniformName + "\");\n";
     }
 
     @Override
     public String generateLocVarDef() {
-        switch (this) {
-            case MVP:
-                return "\tprivate int u_MvpTrans;\n\tprivate final Matrix4 tempMat4 = new Matrix4();\n";
-            case NORMAL:
-                return "\tprivate int u_NormalTrans;\n";
-            case PROJ:
-                return "\tprivate int u_ProjTrans;\n";
-            case VIEW:
-                return "\tprivate int u_ViewTrans;\n";
-            case WORLD:
-                return "\tprivate int u_WorldTrans;\n\tprivate final Matrix3 tempMat3 = new Matrix3();\n";
-            default:
-                break;
+        if (needsM3) {
+            return "\tprivate int " + locVarName + ";\n\tprivate final Matrix3 tempMat3 = new Matrix3();\n";
+        } else if (needsM4) {
+            return "\tprivate int " + locVarName + ";";
+
+        } else {
+            return "\tprivate int " + locVarName + ";\n\tprivate final Matrix3 tempMat4 = new Matrix4();\n";
         }
-        return "";
     }
 
     @Override
@@ -99,17 +104,7 @@ public enum TransDef implements Definition {
     }
 
     @Override
-    public String generateShaderInDef() {
-        return "";
-    }
-
-    @Override
-    public String generateShaderOutDef() {
-        return "";
-    }
-
-    @Override
-    public String generateShaderUniDef() {
+    public String generateShaderDef() {
         switch (this) {
             case MVP:
                 return "uniform mat4 t_mvpTrans;";

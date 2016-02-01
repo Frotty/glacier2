@@ -4,22 +4,32 @@ package glacier.builder.cdefinitions;
 public enum MaterialDef implements Definition {
     DIFFUSETEXTURE() {
         @Override
-        public String generateShaderUniDef() {
+        public String generateShaderDef() {
             return "uniform sampler2D m_diffuseTexture;";
         }
 
-    }, DIFFUSECOLOR;
+        @Override
+        public String generateShaderAccess() {
+            return "m_diffuseTexture";
+        }
 
-    int usages = 0;
+    };
+
+    private int fragUsages = 0;
+    private int vertUsages = 0;
 
     @Override
-    public int getUsages() {
-        return usages;
+    public int getUsages(boolean vert) {
+        return vert ? vertUsages : fragUsages;
     }
 
     @Override
-    public void incrementUsage() {
-        usages++;
+    public void incrementUsage(boolean vert) {
+        if (vert) {
+            vertUsages++;
+        } else {
+            fragUsages++;
+        }
     }
 
     @Override
@@ -48,18 +58,8 @@ public enum MaterialDef implements Definition {
     }
 
     @Override
-    public String generateShaderInDef() {
+    public String generateShaderDef() {
         return "";
-    }
-
-    @Override
-    public String generateShaderOutDef() {
-        return "";
-    }
-
-    @Override
-    public String generateShaderUniDef() {
-        return null;
     }
 
     @Override

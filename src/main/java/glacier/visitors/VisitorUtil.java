@@ -11,7 +11,6 @@ public class VisitorUtil {
             Token start = context.start;
             Token stop = context.stop;
             String s = context.getText().trim().replaceAll("(\\s|\\$NL)+", "");
-            System.out.println("shit: <" + s + ", " + s.length() + ">");
             return !(context.isEmpty()
                     || (start == null)
                     || (stop == null)
