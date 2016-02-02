@@ -29,6 +29,11 @@ public class VarManager {
         return false;
     }
 
+    public void saveVar(GlobalScope scope, Definition definition) {
+        System.out.println("saving: " + definition.getName() + " for scope " + scope);
+        saveVar(defaultVarMap, scope, definition);
+    }
+
     public void saveVar(ParserRuleContext ruleContext, Definition definition) {
         System.out.println("saving: " + definition.getName() + " for scope " + ruleContext);
         saveVar(userVarMap, ruleContext, definition);
@@ -72,6 +77,10 @@ public class VarManager {
         }
     }
 
+    public Definition getVar(String globalScope, String name, ParserRuleContext shaderPart) {
+        return getVar(GlobalScope.getFromName(globalScope, shaderPart instanceof GlacierParser.VertexShaderContext), name);
+    }
+
 
     public static enum GlobalScope {
         VERT_IN("in", ""), MAT("mat", "mat"), TRANS("trans", "trans"), VERT_OUT("out", ""), FRAG_OUT("", "out"), UNI("uni", "uni");
@@ -96,13 +105,13 @@ public class VarManager {
 
     private void populateDefaulScopes() {
         for (VertexInDef def : VertexInDef.values()) {
-            saveVar(defaultVarMap, GlobalScope.VERT_IN, def);
+            saveVar(GlobalScope.VERT_IN, def);
         }
         for (MaterialDef def : MaterialDef.values()) {
-            saveVar(defaultVarMap, GlobalScope.MAT, def);
+            saveVar(GlobalScope.MAT, def);
         }
         for (TransDef def : TransDef.values()) {
-            saveVar(defaultVarMap, GlobalScope.TRANS, def);
+            saveVar(GlobalScope.TRANS, def);
         }
     }
 }

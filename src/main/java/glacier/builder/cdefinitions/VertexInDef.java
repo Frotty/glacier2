@@ -1,7 +1,7 @@
 package glacier.builder.cdefinitions;
 
 public enum VertexInDef implements Definition {
-    POS("pos", "position", "vec3"), NORMAL("normal", "normal", "vec3"), TEXCOORD("texCoord", "textCoord0", "vec2"), COLOR("color", "color", "vce4");
+    POS("pos", "position", "vec3"), NORMAL("normal", "normal", "vec3"), TEXCOORD("texCoord", "textCoord0", "vec2"), COLOR("color", "color", "vec4");
 
     private final String name;
     private final String attributeName;

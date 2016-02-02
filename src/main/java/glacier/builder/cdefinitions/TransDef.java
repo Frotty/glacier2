@@ -127,15 +127,15 @@ public enum TransDef implements Definition {
     public String getName() {
         switch (this) {
             case MVP:
-                return "t_mvpTrans";
+                return "mvpTrans";
             case NORMAL:
-                return "t_normalTrans";
+                return "normalTrans";
             case PROJ:
-                return "t_projTrans";
+                return "projTrans";
             case VIEW:
-                return "t_viewTrans";
+                return "viewTrans";
             case WORLD:
-                return "t_worldTrans";
+                return "worldTrans";
             default:
                 break;
 

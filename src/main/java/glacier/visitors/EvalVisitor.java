@@ -1,6 +1,7 @@
 package glacier.visitors;
 
 import antlr4.GlacierParser.*;
+import glacier.builder.cdefinitions.Definition;
 import glacier.builder.cdefinitions.UniformDef;
 import glacier.builder.cdefinitions.VariableDef;
 import glacier.error.GlacierErrorType;
@@ -155,7 +156,7 @@ public class EvalVisitor extends ExtendedVisitor<String> {
         if (VisitorUtil.hasSize(ctx.uniformArgs)) {
             for (VarDefContext unidef : ctx.uniformArgs.vardefs) {
                 UniformDef def = new UniformDef(unidef.varType.getText(), unidef.varName.getText());
-                varManager.saveVar(getShaderPart(ctx), def);
+                varManager.saveVar(VarManager.GlobalScope.UNI, def);
             }
         }
         return "";
@@ -163,11 +164,11 @@ public class EvalVisitor extends ExtendedVisitor<String> {
 
     @Override
     public String visitExprMemberVar(ExprMemberVarContext ctx) {
-        compilationResult.log("exprmbr");
         ParserRuleContext shaderPart = getShaderPart(ctx);
-        if (ctx.ieDirect != null) {
-            System.out.println("Visiting: " + ctx.getText() + " : " + shaderPart + " varname: <" + ctx.varname.getText() + ">");
+        if (VisitorUtil.hasSize(ctx.ieDirect)) {
+            System.out.println("Visiting ExprMember: " + ctx.getText() + " : " + shaderPart + " varname: <" + ctx.varname.getText() + ">");
             // Is Implicit Access
+            Definition var = varManager.getVar(ctx.ieDirect.getText(), ctx.varname.getText(), shaderPart);
             String directive = ctx.ieDirect.getText().trim().toLowerCase();
             switch (directive) {
                 case "in":

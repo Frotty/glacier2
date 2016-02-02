@@ -4,6 +4,7 @@ import antlr4.GlacierParser.*;
 import glacier.builder.cdefinitions.Definition;
 import glacier.parser.CompilationResult;
 import glacier.parser.VarManager;
+import glacier.visitors.VisitorUtil;
 import org.antlr.v4.runtime.ParserRuleContext;
 
 import java.util.ArrayList;
@@ -105,6 +106,7 @@ public class GLSLPrintVisitor extends PrintVisitor<java.lang.String> {
         if (expr.funcCall != null) {
             visit(expr.funcCall);
         } else if (expr.varname != null) {
+            result.log("visit varname: " + expr.varname.getText());
             if (expr.varname.getText().length() > 1 && expr.varname.getText().charAt(1) == '_') {
                 print(expr.varname.getText());
             } else {
@@ -119,6 +121,7 @@ public class GLSLPrintVisitor extends PrintVisitor<java.lang.String> {
 
     @Override
     public String visitExpr(ExprContext expr) {
+        result.log("visit Expr: " + expr.getText());
 //		System.out.println("expr<<<<<<<" + expr.getText());
         if (expr.left != null) {
 //			System.out.println("expr1<<<<<<<" + expr.left.getText());
@@ -155,9 +158,11 @@ public class GLSLPrintVisitor extends PrintVisitor<java.lang.String> {
                 print("." + expr.varName.getText());
             }
         } else if (expr.ieD != null) {
+            result.log("  -> is GlobalScopeAccess");
             String accessName = varManager.getVar(VarManager.GlobalScope.getFromName(expr.ieD.getText(),
                     getShaderPart(expr) instanceof VertexShaderContext),
                     expr.varName.getText()).generateShaderAccess();
+            result.log("    -> access via: " + accessName);
             print(accessName);
         } else {
         }
@@ -168,6 +173,7 @@ public class GLSLPrintVisitor extends PrintVisitor<java.lang.String> {
 
     @Override
     public String visitStmtSet(StmtSetContext stmt) {
+        result.log("visit SetStmt: " + stmt.getText());
         visit(stmt.left);
         print(" " + stmt.assignOp.getText() + " ");
         visit(stmt.right);
@@ -177,8 +183,19 @@ public class GLSLPrintVisitor extends PrintVisitor<java.lang.String> {
     }
 
     @Override
+    public String visitExprAssignable(ExprAssignableContext ctx) {
+        result.log("visit ExprAssignable: " + ctx.getText());
+        return super.visitExprAssignable(ctx);
+    }
+
+
+    @Override
     public String visitExprMemberVar(ExprMemberVarContext expr) {
-        if (expr.ieDirect != null) {
+        if (VisitorUtil.hasSize(expr.ieDirect)) {
+            result.log("visit IED: " + expr.ieDirect.getText() + " vert: " + (getShaderPart(expr) instanceof VertexShaderContext));
+            VarManager.GlobalScope fromName = VarManager.GlobalScope.getFromName(expr.ieDirect.getText(), true);
+
+            print(varManager.getVar(expr.ieDirect.getText(), expr.varname.getText(), getShaderPart(expr)).generateShaderAccess());
 //            if (isFragment && expr.ieDirect.getText().equals("in")) {
 //                print(expr.varname.getText());
 //            } else if (expr.ieDirect.getText().equals("out")) {

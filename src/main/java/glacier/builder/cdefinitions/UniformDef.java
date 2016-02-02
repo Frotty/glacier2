@@ -1,6 +1,7 @@
 package glacier.builder.cdefinitions;
 
 public class UniformDef implements Definition {
+	private final String name;
 	private String type;
 	private String nameL;
 	private String nameU;
@@ -23,6 +24,7 @@ public class UniformDef implements Definition {
 
 	public UniformDef(String type, String name) {
 		this.type = type;
+		this.name = name;
 		this.nameL = "u_" + name.substring(0, 1).toLowerCase() + name.substring(1);
 		this.nameU = "u_" + name.substring(0, 1).toUpperCase() + name.substring(1);
 	}
@@ -57,17 +59,16 @@ public class UniformDef implements Definition {
 
 	@Override
 	public String generateShaderAccess() {
-		return getName();
+		return "u_" + getName();
 	}
 
 	@Override
 	public String getName() {
-		return nameL;
+		return name;
 	}
 
 	@Override
 	public String getType() {
-		// TODO Auto-generated method stub
 		return null;
 	}
 }
