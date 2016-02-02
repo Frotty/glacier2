@@ -1,9 +1,9 @@
 package glacier.visitors;
 
 import antlr4.GlacierParser.*;
-import glacier.builder.cdefinitions.Definition;
 import glacier.builder.cdefinitions.UniformDef;
 import glacier.builder.cdefinitions.VariableDef;
+import glacier.builder.cdefinitions.VertexOutDef;
 import glacier.error.GlacierErrorType;
 import glacier.parser.CompilationResult;
 import glacier.parser.VarManager;
@@ -68,7 +68,7 @@ public class EvalVisitor extends ExtendedVisitor<String> {
     public String visitShaderBlock(ShaderBlockContext ctx) {
         compilationResult.log("visit shaderBlock");
         super.visitShaderBlock(ctx);
-        return "" ;
+        return "";
     }
 
     @Override
@@ -92,8 +92,8 @@ public class EvalVisitor extends ExtendedVisitor<String> {
     @Override
     public String visitExpr(ExprContext ctx) {
         compilationResult.log("visit Expression: <" + ctx.getText() + ">");
-        if(VisitorUtil.hasSize(ctx.ieD)) {
-            if(varManager.globalAccessValid(ctx, getShaderPart(ctx))) {
+        if (VisitorUtil.hasSize(ctx.ieD)) {
+            if (varManager.globalAccessValid(ctx, getShaderPart(ctx))) {
                 varManager.incrementUsage(ctx, getShaderPart(ctx));
                 compilationResult.log("Valid Global Var Access");
             }
@@ -168,27 +168,16 @@ public class EvalVisitor extends ExtendedVisitor<String> {
         if (VisitorUtil.hasSize(ctx.ieDirect)) {
             System.out.println("Visiting ExprMember: " + ctx.getText() + " : " + shaderPart + " varname: <" + ctx.varname.getText() + ">");
             // Is Implicit Access
-            Definition var = varManager.getVar(ctx.ieDirect.getText(), ctx.varname.getText(), shaderPart);
-            String directive = ctx.ieDirect.getText().trim().toLowerCase();
-            switch (directive) {
-                case "in":
-                    if (varManager.varExists(VarManager.GlobalScope.VERT_IN, ctx.varname.getText())) {
-                        varManager.getVar(VarManager.GlobalScope.VERT_IN, ctx.varname.getText()).incrementUsage(vert);
-                    } else {
-                        compilationResult.error(ctx, GlacierErrorType.VAR_NOT_FOUND, ctx.varname.getText());
+            VarManager.GlobalScope scope = VarManager.GlobalScope.getFromName(ctx.ieDirect.getText(), shaderPart instanceof VertexShaderContext);
+            String name = ctx.varname.getText();
+            switch (scope) {
+                case VERT_OUT:
+                    if (!varManager.varExists(VarManager.GlobalScope.VERT_OUT, name)) {
+                        varManager.saveVar(VarManager.GlobalScope.VERT_OUT, new VertexOutDef(name, "vec4"));
                     }
-                    break;
-                case "out":
-                    if (varManager.varExists(shaderPart, ctx.varname.getText())) {
-                        varManager.getVar(shaderPart, ctx.varname.getText()).incrementUsage(shaderPart instanceof VertexShaderContext);
-                    } else {
-                        compilationResult.error(ctx, GlacierErrorType.VAR_NOT_FOUND, ctx.varname.getText(), shaderPart.toString());
-                    }
-                    break;
-                default:
-                    compilationResult.error(ctx, GlacierErrorType.INVALID_IEDIRECTIVE, directive);
-                    break;
+                    varManager.getVar(ctx.ieDirect.getText(), ctx.varname.getText(), shaderPart).incrementUsage(shaderPart instanceof VertexShaderContext);
             }
+
         }
         return "";
     }
