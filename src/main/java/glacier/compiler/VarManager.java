@@ -1,4 +1,4 @@
-package glacier.parser;
+package glacier.compiler;
 
 import antlr4.GlacierParser;
 import glacier.builder.cdefinitions.Definition;

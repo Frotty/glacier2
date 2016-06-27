@@ -1,7 +1,7 @@
 package test;
 
 import glacier.error.GlacierErrorType;
-import glacier.parser.CompilationResult;
+import glacier.compiler.CompilationResult;
 import org.junit.Test;
 
 public class VertTests extends  GlacierBaseTest {

@@ -1,4 +1,4 @@
-package glacier.parser;
+package glacier.compiler;
 
 
 public class CompilationConfig {

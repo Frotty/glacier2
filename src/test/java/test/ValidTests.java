@@ -1,6 +1,6 @@
 package test;
 
-import glacier.parser.CompilationResult;
+import glacier.compiler.CompilationResult;
 import org.junit.Test;
 
 import java.io.IOException;

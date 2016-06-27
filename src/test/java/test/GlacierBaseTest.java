@@ -2,9 +2,9 @@ package test;
 
 import glacier.error.GlacierError;
 import glacier.error.GlacierErrorType;
-import glacier.parser.CompilationConfig;
-import glacier.parser.CompilationResult;
-import glacier.parser.GlacierCompiler;
+import glacier.compiler.CompilationConfig;
+import glacier.compiler.CompilationResult;
+import glacier.compiler.GlacierCompiler;
 import org.junit.Assert;
 import org.junit.Before;
 

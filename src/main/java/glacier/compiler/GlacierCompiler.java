@@ -1,4 +1,4 @@
-package glacier.parser;
+package glacier.compiler;
 
 import antlr4.GlacierParser;
 import glacier.print.GLSLPrintVisitor;
@@ -11,7 +11,7 @@ public class GlacierCompiler {
 
     public CompilationResult compileShader(CompilationConfig compilationConfig) {
         System.out.println("Compiling Shader:\n---\n" + compilationConfig.getGlacierShader()+"\n---\n");
-        // Create a lexer and glacier.parser for the input.
+        // Create a lexer and glacier.compiler for the input.
         ExtendedLexer lexer = new ExtendedLexer(new ANTLRInputStream(compilationConfig.getGlacierShader()));
         GlacierParser parser = new GlacierParser(new CommonTokenStream(lexer));
 

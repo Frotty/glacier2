@@ -2,8 +2,8 @@ package glacier.print;
 
 import antlr4.GlacierParser.*;
 import glacier.builder.cdefinitions.Definition;
-import glacier.parser.CompilationResult;
-import glacier.parser.VarManager;
+import glacier.compiler.CompilationResult;
+import glacier.compiler.VarManager;
 import glacier.visitors.VisitorUtil;
 import org.antlr.v4.runtime.ParserRuleContext;
 

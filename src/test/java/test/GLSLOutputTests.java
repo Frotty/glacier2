@@ -1,6 +1,6 @@
 package test;
 
-import glacier.parser.CompilationResult;
+import glacier.compiler.CompilationResult;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -40,9 +40,9 @@ public class GLSLOutputTests extends GlacierBaseTest {
     public void testUniformUse() {
         CompilationResult compilationResult = compileVertPart(
                 "uni\n" +
-                "\t\tvec4 someUniform\n" +
-                "\tmain()\n" +
-                "\t\tvec4 temp = uni.someUniform", true);
+                        "\t\tvec4 someUniform\n" +
+                        "\tmain()\n" +
+                        "\t\tvec4 temp = uni.someUniform", true);
         assertErrors(compilationResult.errors);
         assertGlslExists(compilationResult.vertexShader, "uniform vec4 u_someUniform");
         assertGlslExists(compilationResult.vertexShader, "vec4 l_temp = u_someUniform");
@@ -52,15 +52,13 @@ public class GLSLOutputTests extends GlacierBaseTest {
     public void testVertOutUse() {
         CompilationResult compilationResult = compileVertPart(
                 "out\n" +
-                "\t\tvec4 boat\n" +
-                "\tmain()\n" +
-                "\t\tout.boat = in.color", true);
+                        "\t\tvec4 boat\n" +
+                        "\tmain()\n" +
+                        "\t\tout.boat = in.color", true);
         assertErrors(compilationResult.errors);
         assertGlslExists(compilationResult.vertexShader, "out vec4 v_boat");
         assertGlslExists(compilationResult.vertexShader, "v_boat = a_color");
     }
-
-
 
 
 }

@@ -5,8 +5,8 @@ import glacier.builder.cdefinitions.UniformDef;
 import glacier.builder.cdefinitions.VariableDef;
 import glacier.builder.cdefinitions.VertexOutDef;
 import glacier.error.GlacierErrorType;
-import glacier.parser.CompilationResult;
-import glacier.parser.VarManager;
+import glacier.compiler.CompilationResult;
+import glacier.compiler.VarManager;
 import org.antlr.v4.runtime.ParserRuleContext;
 
 public class EvalVisitor extends ExtendedVisitor<String> {

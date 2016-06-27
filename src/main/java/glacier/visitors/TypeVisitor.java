@@ -3,7 +3,7 @@ package glacier.visitors;
 import antlr4.GlacierBaseVisitor;
 import antlr4.GlacierParser.ExprContext;
 import antlr4.GlacierParser.ExprPrimaryContext;
-import glacier.parser.VarManager;
+import glacier.compiler.VarManager;
 
 public class TypeVisitor extends GlacierBaseVisitor<String> {
 	private VarManager varManager;

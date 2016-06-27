@@ -1,4 +1,4 @@
-package glacier.parser;
+package glacier.compiler;
 
 import glacier.error.GlacierError;
 import glacier.error.GlacierErrorType;

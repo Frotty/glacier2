@@ -4,7 +4,7 @@ import antlr4.GlacierBaseVisitor;
 import antlr4.GlacierParser.ContextOptContext;
 import antlr4.GlacierParser.GlacierHeaderContext;
 import glacier.error.GlacierErrorType;
-import glacier.parser.CompilationResult;
+import glacier.compiler.CompilationResult;
 
 public class HeaderVisitor extends GlacierBaseVisitor<String> {
     private final EvalResult evalResult;
